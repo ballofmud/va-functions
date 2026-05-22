@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using Dapper;
 
 namespace va.functions;
 
@@ -10,11 +12,12 @@ public class DniWolne
     private class TickerDailyValue
     {
         public string Ticker { get; set; }
-        public DateTime Date { get; set; }
-        public decimal Value { get; set; }
+        public DateTime TickerDate { get; set; }
+        public decimal TickerValue { get; set; }
     }
 
     private readonly ILogger<DniWolne> _logger;
+    private readonly string _connectionString = Environment.GetEnvironmentVariable("SqlConnectionString");
 
     public DniWolne(ILogger<DniWolne> logger)
     {
@@ -24,13 +27,14 @@ public class DniWolne
     [Function("DniWolne")]
     public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
     {
-        var tickerDailyValues = new List<TickerDailyValue>
+
+        using (var conn = new SqlConnection(_connectionString))
         {
-            new TickerDailyValue { Ticker = "AAPL", Date = DateTime.UtcNow.Date, Value = 150.25m },
-            new TickerDailyValue { Ticker = "MSFT", Date = DateTime.UtcNow.Date, Value = 250.75m },
-            new TickerDailyValue { Ticker = "GOOGL", Date = DateTime.UtcNow.Date, Value = 2750.50m }
-        };
+            var data = conn.QueryAsync<TickerDailyValue>("SELECT Ticker, TickerDate, TickerValue FROM TickerDailyValue").Result;
+            return new OkObjectResult(data);
+        }
+
         
-        return new OkObjectResult(tickerDailyValues);
+        
     }
 }
