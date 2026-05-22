@@ -17,10 +17,11 @@ public class DniWolne
     }
 
     private readonly ILogger<DniWolne> _logger;
-    private readonly string _connectionString = Environment.GetEnvironmentVariable("SqlConnectionString");
+    private readonly string _connectionString;
 
     public DniWolne(ILogger<DniWolne> logger)
     {
+        _connectionString = Environment.GetEnvironmentVariable("SQLConnectionString") ?? throw new InvalidOperationException("SQLConnectionString environment variable is not set.");
         _logger = logger;
     }
 
@@ -30,11 +31,8 @@ public class DniWolne
 
         using (var conn = new SqlConnection(_connectionString))
         {
-            var data = conn.QueryAsync<TickerDailyValue>("SELECT Ticker, TickerDate, TickerValue FROM TickerDailyValue").Result;
+            var data = conn.QueryAsync<TickerDailyValue>("SELECT Ticker, TickerDate, TickerValue FROM va_tst.TickerDailyValue").Result;
             return new OkObjectResult(data);
         }
-
-        
-        
     }
 }
