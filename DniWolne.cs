@@ -21,7 +21,7 @@ public class DniWolne
 
     public DniWolne(ILogger<DniWolne> logger)
     {
-        _connectionString = Environment.GetEnvironmentVariable("SQLConnectionString") ?? throw new InvalidOperationException("SQLConnectionString environment variable is not set.");
+        _connectionString = Environment.GetEnvironmentVariable("SQLCONNSTR_SQLConnectionString") ?? throw new InvalidOperationException("SQLConnectionString environment variable is not set.");
         _logger = logger;
     }
 
