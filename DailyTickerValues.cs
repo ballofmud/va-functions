@@ -7,7 +7,7 @@ using Dapper;
 
 namespace va.functions;
 
-public class DniWolne
+public class DailyTickerValues
 {
     private class TickerDailyValue
     {
@@ -16,16 +16,16 @@ public class DniWolne
         public decimal TickerValue { get; set; }
     }
 
-    private readonly ILogger<DniWolne> _logger;
+    private readonly ILogger<DailyTickerValues> _logger;
     private readonly string _connectionString;
 
-    public DniWolne(ILogger<DniWolne> logger)
+    public DailyTickerValues(ILogger<DailyTickerValues> logger)
     {
         _connectionString = Environment.GetEnvironmentVariable("SQLCONNSTR_SQLConnectionString") ?? throw new InvalidOperationException("SQLConnectionString environment variable is not set.");
         _logger = logger;
     }
 
-    [Function("DniWolne")]
+    [Function("DailyTickerValues")]
     public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
     {
 
