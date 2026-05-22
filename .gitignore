@@ -264,6 +264,7 @@ __pycache__/
 *.pyc
 
 # Ignore Azurite local storage files
+__*
 __azurite_db_*.json
 blobstorage/
 queuestorage/
